@@ -128,6 +128,68 @@ use PHPUnit\Framework\TestCase;
     }
 ```
 
+Os mocks podem retornar diferentes valores dependendo dos parâmetros
+
+```php
+use PHPUnit\Framework\TestCase;
+
+    /**
+     * @test
+    */
+    public function testShouldSuccessfullyPayWhenApiReturnOk()
+    {
+        $httpClient = $this->createMock(HttpClient::class);
+        $service = new PaymentService(httpClient);
+
+        $map = [
+            [
+                'POST',
+                [
+                    'user' => 'login'
+                    'password' => 'password'
+                ],
+                'api.PaymentServiceWeb.com/authenticate',
+                'meu-token'
+            ],
+            [
+                'POST',
+                [
+                    'name' => 'userName',
+                    'creditCardNumber' =: '999999999',
+                    'validity' => '12/30',
+                    'token' => $token
+                ],
+                'api.PaymentServiceWeb.com/pay',
+                ['paid' => true]
+            ]
+        ];
+
+        $httpClient->expects($this->once())
+            ->method('sendRequest')
+            ->will($this->returnValueMap($map));
+        
+        /**
+         * O método sendRequest do httpClient será chamado duas vezes
+         * Logo, será necessário retornar valores diferentes para cada chamada, imitando o comportamento do service
+         * O método sendRequest espera 3 parâmentros, logo o quarto parâmetro passado em cada array de map 
+         * é referente ao retorno fictício do método
+        */
+
+        $paid = $service->pay(
+            [
+                'user' => 'login'
+                'password' => 'password'
+            ],
+            'userName',
+            '999999999',
+            '12/30',
+            100
+        );
+
+        $this->assertEquals(true, $paid);
+    }
+```
+
 ### Dummies
 São entidades criadas apenas para satisfazer alguma necessidade de métodos, não irão necessariamente ser usados.
 Podem ser criados a partir do createMock do PHPUnit, mas existe necessidade de criação de nenhuma assert nem retorno de método.

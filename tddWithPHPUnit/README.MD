@@ -117,7 +117,7 @@ use PHPUnit\Framework\TestCase;
         ];
 
         $repository = $this->createMock(UserRepository::class);
-        $repository->expects($this->onde())
+        $repository->expects($this->once())
             ->method('create');
         //funciona como uma assert
         //verifica se o método create do repository é chamado em 
@@ -127,3 +127,15 @@ use PHPUnit\Framework\TestCase;
         $controller->postCreate($payload);
     }
 ```
+
+### Dummies
+São entidades criadas apenas para satisfazer alguma necessidade de métodos, não irão necessariamente ser usados.
+Podem ser criados a partir do createMock do PHPUnit, mas existe necessidade de criação de nenhuma assert nem retorno de método.
+
+### Spies 
+Assert pelo estado do objeto.
+
+Curti não rs
+
+### Fakes
+Simular comunicação com banco de dados, apis entre outras coisas.

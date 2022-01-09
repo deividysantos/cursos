@@ -29,18 +29,19 @@
 ---------------------------------------------------------------------------------------------------------------------------
 ## Nomes para testes
 
--> Perguntas que devem ser respondidas
+### Perguntas que devem ser respondidas no nome do método
 - O que está sendo testado?<br>
 - Quais as circunstâncias?<br>
 - Qual o resultado esperado?<br>
 
-Ex: 
-shouldBeValidWhenValueIsANumber<br>
+Ex: <br>
+shouldBeValidWhenValueIsANumber
 should_BeValid_When_ValueIsANumber<br>
 isValid_ValuesIsANumber_True<br>
 beValidIdValueIsANumber<br>
 
-- Sempre Utilizar nomes claros
+OBS: Sempre Utilizar nomes claros
+
 ---------------------------------------------------------------------------------------------------------------------------
 
 ## Data Providers
@@ -49,10 +50,12 @@ Para que possamos criar vários testes sem a necessidade da repetição de códi
 ```php
 /**
 *@test 
-*indica para o phpunit que esta função é um test, retirando a necessidade de utilizar o prefixo test no nome do método
+*indica para o phpunit que esta função é um test, retirando a
+*necessidade de utilizar o prefixo test no nome do método
 *
 *@dataprovider valueDataProvider 
-indica para o phpunit que esta função será utilizada para retornar todos os valores de $value que serão testados com os seus respectivos nomes de teste
+*indica para o phpunit que esta função será utilizada para retornar todos
+*os valores de $value que serão testados com os seus respectivos nomes de teste
 */
 public function testFoo($value)
 {
@@ -62,9 +65,9 @@ public function testFoo($value)
 public function valueDataProvider()
 {
     return [
-            ‘nameTest’ => [‘varName’ => ‘varValue’],
-            ‘nameTest2’ => [‘varName’ => ‘varValue2]
-];
+        ‘nameTest’ => [‘varName’ => ‘varValue’],
+        ‘nameTest2’ => [‘varName’ => ‘varValue2]
+    ];
 }
 ```
 ---------------------------------------------------------------------------------------------------------------------------

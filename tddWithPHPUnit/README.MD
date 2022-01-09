@@ -97,3 +97,33 @@ Utilizando PhpUnit:
 ```
 
 Por trás, o phpunit cria uma classe e acrescenta nela os métodos indicados que irão retornar apenas o necessário para a realização do teste unitário. Evitando, assim, que o mesmo se torne um teste de integração.
+
+### Mocks 
+É utilizado para testar comportamentos e não necessáriamente retornos.
+
+Ex:
+
+```php
+use PHPUnit\Framework\TestCase;
+
+    /**
+     * @test
+    */
+    public function testCreateUser()
+    {
+        $payload = [
+            'email' => 'test@gmail.com',
+            'password' => 'secretPassword'
+        ];
+
+        $repository = $this->createMock(UserRepository::class);
+        $repository->expects($this->onde())
+            ->method('create');
+        //funciona como uma assert
+        //verifica se o método create do repository é chamado em 
+        //algum momento pelo método postCreate do controller
+
+        $controller = new UserController($repository);
+        $controller->postCreate($payload);
+    }
+```

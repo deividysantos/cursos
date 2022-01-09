@@ -128,7 +128,7 @@ use PHPUnit\Framework\TestCase;
     }
 ```
 
-Os mocks podem retornar diferentes valores dependendo dos parâmetros
+Os mocks podem retornar diferentes valores dependendo dos parâmetros passados
 
 ```php
 use PHPUnit\Framework\TestCase;
@@ -139,7 +139,7 @@ use PHPUnit\Framework\TestCase;
     public function testShouldSuccessfullyPayWhenApiReturnOk()
     {
         $httpClient = $this->createMock(HttpClient::class);
-        $service = new PaymentService(httpClient);
+        $service = new PaymentService($httpClient);
 
         $map = [
             [
@@ -157,6 +157,7 @@ use PHPUnit\Framework\TestCase;
                     'name' => 'userName',
                     'creditCardNumber' =: '999999999',
                     'validity' => '12/30',
+                    'value' => 100
                     'token' => $token
                 ],
                 'api.PaymentServiceWeb.com/pay',
@@ -164,7 +165,7 @@ use PHPUnit\Framework\TestCase;
             ]
         ];
 
-        $httpClient->expects($this->once())
+        $httpClient->expects($this->atLeast(2))
             ->method('sendRequest')
             ->will($this->returnValueMap($map));
         
@@ -174,6 +175,47 @@ use PHPUnit\Framework\TestCase;
          * O método sendRequest espera 3 parâmentros, logo o quarto parâmetro passado em cada array de map 
          * é referente ao retorno fictício do método
         */
+
+        $paid = $service->pay(
+            [
+                'user' => 'login'
+                'password' => 'password'
+            ],
+            'userName',
+            '999999999',
+            '12/30',
+            100
+        );
+
+        $this->assertEquals(true, $paid);
+    }
+```
+E também podem retornar valores diferentes dependendo da ordem da chamada
+
+```php
+use PHPUnit\Framework\TestCase;
+
+    /**
+     * @test
+    */
+    public function testShouldSuccessfullyPayWhenApiReturnOk()
+    {
+        $httpClient = $this->createMock(HttpClient::class);
+        $service = new PaymentService($httpClient);
+
+        $httpClient->expects($this->at(0))
+            ->method('sendRequest')
+            ->willReturn('meu-token');
+        /**
+         * Na primeira vez que o método sendRequest for chamado, o retorno será meu-token, 
+         * independente de quais sejam os parâmetros passados
+         * 
+         * Este comportamento é possível graças ao método at()
+        */
+
+        $httpClient->expects($this->at(1))
+            ->method('sendRequest')
+            ->willReturn(['paid' => true]);
 
         $paid = $service->pay(
             [
